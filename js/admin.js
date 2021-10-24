@@ -76,6 +76,11 @@ function agregarProducto() {
   //cargar el producti nuevo en la fila
   crearFilas(productoNuevo);
   //mostrar mensaje a un usuario
+  Swal.fire(
+    'Producto agregado!',
+    'Su producto fue correctamente cargado!',
+    'success'
+  )
 }
 
 function limpiarFormulario() {
@@ -154,6 +159,12 @@ function actualizarProducto() {
     crearFilas(itemProducto);
   });
   limpiarFormulario();
+
+  Swal.fire(
+    'Producto modificado!',
+    'Su producto fue correctamente modificado!',
+    'success'
+  )
 }
 
 function borrarFilas() {
@@ -162,18 +173,39 @@ function borrarFilas() {
 }
 
 window.eliminarProducto = (codigo) => {
-  console.log(codigo);
-  //aqui borramos el producto despues del arreglo
-  let productosFiltrados = listaProductos.filter((itemProducto) => {
-    return itemProducto.codigo != codigo});
-  console.log(productosFiltrados);
-  //actualizar listaproduucto
-  listaProductos = productosFiltrados;
-  //actualizo el localstorage
-  localStorage.setItem("arregloProductos", JSON.stringify(listaProductos));
-  //dibujar nuevamente la tabla
-  borrarFilas();
-  listaProductos.forEach((itemProductos) => {
-    crearFilas(itemProductos);
-  });
-};
+    Swal.fire({
+      title: "¿Esta seguro de eliminar este producto?",
+      text: "Una vez eliminado el producto no se puede recuperar el producto",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Borrar producto",
+      cancelButtonText: "Cancelar",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // agregar todo el codigo que borra el producto
+        console.log(codigo);
+        // aqui borramos el producto dentro del arreglo
+        let productosFiltrado = listaProductos.filter((itemProducto) => {
+          return itemProducto.codigo != codigo;
+        });
+  
+        console.log(productosFiltrado);
+        // actualizar el arreglo listaProductos
+        listaProductos = productosFiltrado;
+        // actualizo el localstorage
+        localStorage.setItem("arregloProductos", JSON.stringify(listaProductos));
+        // dibujar nuevamente la tabla
+        borrarFilas();
+        listaProductos.forEach((itemProducto) => {
+          crearFilas(itemProducto);
+        });
+        Swal.fire(
+          "Producto eliminado",
+          "El producto fue correctamente eliminado",
+          "success"
+        );
+      }
+    });
+  };
