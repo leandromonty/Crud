@@ -49,7 +49,7 @@ function guardarProducto(e) {
     } else {
       // tengo q modificar el producto
       console.log("aqui modifico");
-      actualizarProducto()
+      actualizarProducto();
     }
   } else {
     //aqui no hacemos nada
@@ -112,7 +112,7 @@ function crearFilas(itemProducto) {
     <td>${itemProducto.url}</td>
     <td>
       <button class="btn btn-warning" onclick="prepararEdicion('${itemProducto.codigo}')">Editar</button>
-      <button class="btn btn-danger">Borrar</button>
+      <button class="btn btn-danger" onclick="eliminarProducto('${itemProducto.codigo}')">Borrar</button>
     </td>
   </tr>`;
 }
@@ -141,21 +141,39 @@ function actualizarProducto() {
   });
   console.log(posicionProducto);
   //modificar los datos de la posicion del arreglo
-  listaProductos[posicionProducto].nombre = producto.value 
-  listaProductos[posicionProducto].cantidad = cantidad.value 
-  listaProductos[posicionProducto].descripcion = descripcion.value 
-  listaProductos[posicionProducto].url = url.value 
+  listaProductos[posicionProducto].nombre = producto.value;
+  listaProductos[posicionProducto].cantidad = cantidad.value;
+  listaProductos[posicionProducto].descripcion = descripcion.value;
+  listaProductos[posicionProducto].url = url.value;
 
   //modificar el localStorage
-localStorage.setItem('arregloProductos', JSON.stringify(listaProductos))
+  localStorage.setItem("arregloProductos", JSON.stringify(listaProductos));
   //volver a dibujar la tabla
-  borrarFilas()
-  listaProductos.forEach((itemProducto)=>{crearFilas(itemProducto)})
-limpiarFormulario()
+  borrarFilas();
+  listaProductos.forEach((itemProducto) => {
+    crearFilas(itemProducto);
+  });
+  limpiarFormulario();
 }
 
-function borrarFilas(){
-    let tabla = document.querySelector("#tablaProducto");
-    tabla.innerHTML= ''
-
+function borrarFilas() {
+  let tabla = document.querySelector("#tablaProducto");
+  tabla.innerHTML = "";
 }
+
+window.eliminarProducto = (codigo) => {
+  console.log(codigo);
+  //aqui borramos el producto despues del arreglo
+  let productosFiltrados = listaProductos.filter((itemProducto) => {
+    return itemProducto.codigo != codigo});
+  console.log(productosFiltrados);
+  //actualizar listaproduucto
+  listaProductos = productosFiltrados;
+  //actualizo el localstorage
+  localStorage.setItem("arregloProductos", JSON.stringify(listaProductos));
+  //dibujar nuevamente la tabla
+  borrarFilas();
+  listaProductos.forEach((itemProductos) => {
+    crearFilas(itemProductos);
+  });
+};
